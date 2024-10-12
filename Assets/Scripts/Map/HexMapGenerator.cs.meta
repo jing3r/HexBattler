@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: c7bcf593516ebbf4d991a039536312d6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - normalTilePrefab: {instanceID: 0}
+  - difficultTerrainPrefab: {instanceID: 0}
+  - highGroundPrefab: {instanceID: 0}
+  - lowGroundPrefab: {instanceID: 0}
+  - partialCoverPrefab: {instanceID: 0}
+  - fullCoverPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
