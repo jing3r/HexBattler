@@ -1,17 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class TurnManager : MonoBehaviour
 {
     public List<Unit> units = new List<Unit>();
     private int currentUnitIndex = 0;
     public TargetSelector targetSelector;
+    public event Action OnRoundEnd;
 
     public void InitializeTurnCycle()
     {
         foreach (var unit in units)
         {
-            unit.initiative = Random.Range(unit.minInitiative, unit.maxInitiative + 1);
+            unit.initiative = UnityEngine.Random.Range(unit.minInitiative, unit.maxInitiative + 1);
             Debug.Log($"{unit.unitName} бросил инициативу: {unit.initiative}");
         }
 
@@ -50,18 +52,23 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void EndRound()
+public void EndRound()
+{
+    Debug.Log("Раунд завершён. Начинаем новый раунд.");
+    currentUnitIndex = 0;
+
+    foreach (var unit in units)
     {
-        Debug.Log("Раунд завершён. Начинаем новый раунд.");
-        currentUnitIndex = 0;
-
-        foreach (var unit in units)
-        {
-            unit.ResetAP();
-        }
-
-        StartNextTurn();
+        unit.ResetAP();
     }
+
+    // Вызываем проверку условий победы
+    FindObjectOfType<GameEndManager>()?.CheckWinConditions();
+
+    StartNextTurn();
+}
+
+
     public void RemoveUnit(Unit unit)
     {
         units.Remove(unit);

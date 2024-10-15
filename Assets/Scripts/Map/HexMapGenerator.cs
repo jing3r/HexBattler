@@ -33,12 +33,12 @@ public class HexMapGenerator : MonoBehaviour
     void GenerateMap()
     {
         ClearMap();
-
+        ResetCapturePoints();
         Vector3 centerPosition = Vector3.zero;
         GameObject centerTile = Instantiate(normalTilePrefab, centerPosition, Quaternion.identity);
         generatedTiles.Add(centerTile);
 
-        Tile centerTileComponent = centerTile.AddComponent<Tile>();
+        Tile centerTileComponent = centerTile.GetComponent<Tile>();
         centerTileComponent.isFlagTile = true;
 
         tilePassability[centerPosition] = centerTileComponent.IsPassable();
@@ -65,7 +65,12 @@ public class HexMapGenerator : MonoBehaviour
             GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             generatedTiles.Add(tile);
 
-            Tile tileComponent = tile.AddComponent<Tile>();
+            Tile tileComponent = tile.GetComponent<Tile>();
+
+            if (ring == 1)
+            {
+                tileComponent.isFlagTile = true;
+            }
 
             if (tilePrefab == highGroundPrefab)
             {
@@ -150,7 +155,6 @@ public class HexMapGenerator : MonoBehaviour
 
                 Unit unitComponent = unit.GetComponent<Unit>();
                 unitComponent.currentTile = tileComponent;
-                tileComponent.SetOccupiedBy(unitComponent);
                 unitIndex++;
             }
         }
@@ -171,7 +175,6 @@ public class HexMapGenerator : MonoBehaviour
 
                 Unit unitComponent = unit.GetComponent<Unit>();
                 unitComponent.currentTile = tileComponent;
-                tileComponent.SetOccupiedBy(unitComponent);
                 unitIndex++;
             }
         }
@@ -182,10 +185,7 @@ public class HexMapGenerator : MonoBehaviour
         foreach (GameObject tile in generatedTiles)
         {
             Tile tileComponent = tile.GetComponent<Tile>();
-            if (tileComponent != null && tileComponent.occupiedBy != null)
-            {
-                tileComponent.ClearOccupiedBy();
-            }
+
             Destroy(tile);
         }
         generatedTiles.Clear();
@@ -197,5 +197,14 @@ public class HexMapGenerator : MonoBehaviour
         }
         generatedUnits.Clear();
         turnManager.units.Clear();
+    }
+
+    private void ResetCapturePoints()
+    {
+        GameEndManager gameEndManager = FindObjectOfType<GameEndManager>();
+        if (gameEndManager != null)
+        {
+            gameEndManager.ResetPoints();
+        }
     }
 }

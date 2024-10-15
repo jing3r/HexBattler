@@ -39,15 +39,15 @@ public class Tile : MonoBehaviour
         return !isImpassable && occupiedBy == null;
     }
 
-    public void SetOccupiedBy(Unit unit)
-    {
-        occupiedBy = unit;
-    }
+    // public void SetOccupiedBy(Unit unit)
+    // {
+    //     occupiedBy = unit;
+    // }
 
-    public void ClearOccupiedBy()
-    {
-        occupiedBy = null;
-    }
+    // public void ClearOccupiedBy()
+    // {
+    //     occupiedBy = null;
+    // }
 
     public int GetMovementCost(bool fromHighGround, bool fromLowGround)
     {
