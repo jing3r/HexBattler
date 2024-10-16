@@ -4,8 +4,6 @@ using UnityEngine;
 public class MeleeAttackAbility : Ability
 {
     public int damage = 5;
-
-    public float RangeWithOffset => range + 0.5f;
     public MeleeAttackAbility()
     {
         alwaysHits = false;

@@ -15,8 +15,11 @@ MonoBehaviour:
   abilityName: RangedAttackAbility
   description: 
   costAP: 1
+  currentUses: 100
+  maxUses: 100
   usableWhileEngaged: 0
   isInstant: 1
   range: 6
+  alwaysHits: 1
   minRange: 2
   damage: 8

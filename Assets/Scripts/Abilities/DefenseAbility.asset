@@ -15,5 +15,10 @@ MonoBehaviour:
   abilityName: DefenseAbility
   description: 
   costAP: 1
+  currentUses: 2
+  maxUses: 2
   usableWhileEngaged: 1
   isInstant: 1
+  range: 0
+  alwaysHits: 1
+  evasionBonus: 0.2

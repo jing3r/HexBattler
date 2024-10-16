@@ -4,9 +4,7 @@ using System.Collections.Generic;
 public class RangedAttackAbility : Ability
 {
     public int minRange = 2;
-    public int damage = 8;
-
-    public float RangeWithOffset => range + 0.5f;
+    public int damage = 8; 
 
     public override void Activate(Unit unit)
     {

@@ -15,7 +15,10 @@ MonoBehaviour:
   abilityName: Movement
   description: 
   costAP: 1
+  currentUses: 100
+  maxUses: 100
   usableWhileEngaged: 1
   isInstant: 1
   range: 1
+  alwaysHits: 1
   defaultMovementSpeed: 6

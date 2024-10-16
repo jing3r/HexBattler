@@ -7,7 +7,6 @@ public class TurnManager : MonoBehaviour
     public List<Unit> units = new List<Unit>();
     private int currentUnitIndex = 0;
     public TargetSelector targetSelector;
-    public event Action OnRoundEnd;
 
     public void InitializeTurnCycle()
     {
@@ -18,7 +17,7 @@ public class TurnManager : MonoBehaviour
         }
 
         units.Sort((a, b) => b.initiative.CompareTo(a.initiative));
-        Debug.Log("Юниты отсортированы по инициативе. Запускаем первый ход.");
+        Debug.Log("Юниты отсортированы по броскам инициативы. Раунд 1 начинается.");
         StartNextTurn();
     }
 
@@ -54,15 +53,13 @@ public class TurnManager : MonoBehaviour
 
 public void EndRound()
 {
-    Debug.Log("Раунд завершён. Начинаем новый раунд.");
+    Debug.Log("Раунд завершён. Начинается новый раунд.");
     currentUnitIndex = 0;
 
     foreach (var unit in units)
     {
         unit.ResetAP();
     }
-
-    // Вызываем проверку условий победы
     FindObjectOfType<GameEndManager>()?.CheckWinConditions();
 
     StartNextTurn();

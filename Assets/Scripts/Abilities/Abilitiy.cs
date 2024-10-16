@@ -6,9 +6,12 @@ public abstract class Ability : ScriptableObject
     public string abilityName = "New Ability";
     public string description;
     public int costAP;
+    public int currentUses;
+    public int maxUses;
     public bool usableWhileEngaged = true;
     public bool isInstant = true;
     public float range = 1f;
+    [HideInInspector] public float RangeWithOffset => range + 0.5f;
     public bool alwaysHits = true;
 
     public virtual bool CheckHit(Unit attacker, Unit target)
