@@ -12,7 +12,7 @@ public class Tile : MonoBehaviour
     public Unit occupiedBy = null;
 
     private PulsatingEffect pulsatingEffect;
-
+    public GameObject marker;
     void Start()
     {
         pulsatingEffect = GetComponent<PulsatingEffect>();
@@ -38,16 +38,6 @@ public class Tile : MonoBehaviour
     {
         return !isImpassable && occupiedBy == null;
     }
-
-    // public void SetOccupiedBy(Unit unit)
-    // {
-    //     occupiedBy = unit;
-    // }
-
-    // public void ClearOccupiedBy()
-    // {
-    //     occupiedBy = null;
-    // }
 
     public int GetMovementCost(bool fromHighGround, bool fromLowGround)
     {

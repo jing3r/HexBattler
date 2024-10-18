@@ -83,7 +83,6 @@ public class GameEndManager : MonoBehaviour
             Debug.Log("Тайлы с флагом пусты. Очки захвата не изменены.");
         }
 
-        // Проверка на достижение требуемых очков захвата
         if (team1CapturePoints >= requiredCapturePoints)
         {
             Debug.Log("Команда 1 побеждает, захватив флаг!");

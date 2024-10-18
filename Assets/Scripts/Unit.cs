@@ -39,12 +39,7 @@ public class Unit : MonoBehaviour
 
     public void MoveToTile(Tile newTile)
     {
-        // if (currentTile != null)
-        // {
-        //     currentTile.ClearOccupiedBy();
-        // }
         currentTile = newTile;
-        // currentTile.SetOccupiedBy(this);
         transform.position = newTile.transform.position + Vector3.up;
         ApplyHeightModifiers();
         Debug.Log($"{unitName} переместился на тайл {newTile.name}");

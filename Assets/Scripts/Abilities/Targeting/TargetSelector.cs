@@ -4,7 +4,8 @@ public class TargetSelector : MonoBehaviour
 {
     public Unit currentUnit;
     public Ability selectedAbility;
-
+    public TileSelector tileSelector;
+    public HighlightController highlightController;
     void Update()
     {
         if (selectedAbility != null && Input.GetMouseButtonDown(0))
@@ -16,42 +17,39 @@ public class TargetSelector : MonoBehaviour
             {
                 Tile targetTile = hit.collider.GetComponent<Tile>();
 
-                if (targetTile != null && selectedAbility is TileTargetedAbility)
+                if (targetTile != null && selectedAbility is TileTargetedAbility tileAbility)
                 {
-                    if (!IsTileAvailable(targetTile))
-                    {
-                        Debug.Log("Тайл занят, непроходим или находится слишком далеко.");
-                        return;
-                    }
-
                     Debug.Log($"Выбрана цель: тайл {targetTile.name}");
-                    ((TileTargetedAbility)selectedAbility).ActivateOnTile(currentUnit, targetTile);
-                    ClearSelection();
+                    tileAbility.ActivateOnTile(currentUnit, targetTile);
+                    selectedAbility = null;
+                    tileSelector.ClearHighlights();
                     return;
                 }
 
                 Unit targetUnit = hit.collider.GetComponent<Unit>();
 
-                if (targetUnit != null && selectedAbility is MeleeAttackAbility)
+                if (targetUnit != null && selectedAbility is MeleeAttackAbility meleeAbility)
                 {
                     Debug.Log($"Выбран юнит {targetUnit.unitName} для ближней атаки.");
-                    ((MeleeAttackAbility)selectedAbility).ActivateOnUnit(currentUnit, targetUnit);
-                    ClearSelection();
+                    meleeAbility.ActivateOnUnit(currentUnit, targetUnit);
+                    selectedAbility = null;
+                    tileSelector.ClearHighlights();
                     return;
                 }
-                else if (targetUnit != null && selectedAbility is RangedAttackAbility)
+                else if (targetUnit != null && selectedAbility is RangedAttackAbility rangedAbility)
                 {
                     Debug.Log($"Выбран юнит {targetUnit.unitName} для дистанционной атаки.");
-                    ((RangedAttackAbility)selectedAbility).ActivateOnUnit(currentUnit, targetUnit);
-                    ClearSelection();
+                    rangedAbility.ActivateOnUnit(currentUnit, targetUnit);
+                    selectedAbility = null;
+                    tileSelector.ClearHighlights();
                     return;
                 }
-
-                if (targetUnit != null && selectedAbility is DefenseAbility)
+                else if (targetUnit != null && selectedAbility is DefenseAbility defenseAbility)
                 {
                     Debug.Log($"Выбран юнит {targetUnit.unitName} для защиты.");
-                    ((DefenseAbility)selectedAbility).ActivateOnUnit(currentUnit, targetUnit);
-                    ClearSelection();
+                    defenseAbility.ActivateOnUnit(currentUnit, targetUnit);
+                    selectedAbility = null;
+                    tileSelector.ClearHighlights();
                     return;
                 }
 
@@ -82,14 +80,19 @@ public class TargetSelector : MonoBehaviour
             HighlightAlliesInRange(((DefenseAbility)selectedAbility).RangeWithOffset);
         }
     }
-
+    public void ActivateTileTargetingAbility(TileTargetedAbility ability)
+    {
+        selectedAbility = ability;
+        tileSelector.HighlightTiles(currentUnit, ability.selectionType, ability.selectionRange);
+        Debug.Log("Активирована способность для выбора тайлов. Выберите цель.");
+    }
     public void CancelTargeting()
     {
         Debug.Log("Отмена выбора способности: " + selectedAbility?.abilityName);
         ClearSelection();
     }
 
-    void ClearSelection()
+    public void ClearSelection()
     {
         selectedAbility = null;
         RemovePulsatingEffectFromTargets();
@@ -161,7 +164,22 @@ public class TargetSelector : MonoBehaviour
             unit.RemoveHighlight();
         }
     }
+    private bool IsValidTarget(Unit targetUnit, Ability ability)
+    {
+        if (targetUnit == null) return false;
 
+        float distance = Vector3.Distance(currentUnit.transform.position, targetUnit.transform.position);
+        return distance <= ability.range + 0.5f;
+    }
+    public void HighlightUnit(Unit targetUnit)
+    {
+        highlightController.EnableCircularHighlight(targetUnit.transform.position);
+    }
+
+    public void ClearUnitHighlight()
+    {
+        highlightController.DisableCircularHighlight();
+    }
     void OnDisable()
     {
         selectedAbility = null;

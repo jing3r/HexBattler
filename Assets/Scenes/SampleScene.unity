@@ -382,6 +382,8 @@ GameObject:
   - component: {fileID: 634270505}
   - component: {fileID: 634270503}
   - component: {fileID: 634270504}
+  - component: {fileID: 634270506}
+  - component: {fileID: 634270507}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -462,6 +464,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentUnit: {fileID: 0}
   selectedAbility: {fileID: 0}
+  tileSelector: {fileID: 634270506}
+  highlightController: {fileID: 634270507}
 --- !u!114 &634270504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -488,6 +492,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetSelector: {fileID: 634270503}
+--- !u!114 &634270506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634270499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69ba647a10f9eae4d80837ea89eabcbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedTiles: []
+  targetSelector: {fileID: 634270503}
+  selectedAbility: {fileID: 0}
+  highlightController: {fileID: 634270507}
+--- !u!114 &634270507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634270499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6edc9d188ddab324f9f868d78a1efa07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hexHighlight: {fileID: 0}
+  circularHighlight: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
