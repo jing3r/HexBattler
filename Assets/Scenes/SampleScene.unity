@@ -435,7 +435,7 @@ MonoBehaviour:
   - {fileID: 828020836823798726, guid: 2cf935175492b864ca68f8ca7c153bbd, type: 3}
   - {fileID: 9127638881777851835, guid: ab61c44baa1c96642b2a4db54ca4588c, type: 3}
   - {fileID: 5587656756996840230, guid: 337930421ce449140877124cef45799c, type: 3}
-  rings: 7
+  rings: 6
   turnManager: {fileID: 634270502}
 --- !u!114 &634270502
 MonoBehaviour:
@@ -535,6 +535,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxTargets: 3
+  radius: 1
+  distance: 5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

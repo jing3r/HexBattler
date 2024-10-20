@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class HoverHighlight : MonoBehaviour
@@ -7,8 +8,11 @@ public class HoverHighlight : MonoBehaviour
     private HighlightController highlightController;
     private Tile lastHoveredTile;
     private List<Tile> currentlyHighlightedTiles = new List<Tile>();
-    private int currentSelectionType = 0; // 0 - Circle/Tile, 1 - Triangle, 2 - Ray, 3 - Line
-    private int radius = 0;
+    private List<Tile> selectedTiles = new List<Tile>();
+    public int maxTargets = 3;
+    public int radius = 0;
+    public int distance = 5;
+    private int currentSelectionType = -1;
 
     void Start()
     {
@@ -20,26 +24,55 @@ public class HoverHighlight : MonoBehaviour
     {
         HandleInput();
         HandleHighlighting();
+
+        if (Input.GetMouseButtonDown(0) && currentSelectionType != -1)
+        {
+            SelectTile();
+        }
     }
 
     void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Q)) { currentSelectionType = 0; radius = 0; } // Tile mode
-        if (Input.GetKeyDown(KeyCode.W)) { currentSelectionType = 0; radius = 1; } // Circle mode
-        if (Input.GetKeyDown(KeyCode.E)) { currentSelectionType = 1; } // Triangle mode
-        if (Input.GetKeyDown(KeyCode.R)) { currentSelectionType = 2; } // Ray mode
-        if (Input.GetKeyDown(KeyCode.T)) { currentSelectionType = 3; } // Line mode
+        if (Input.GetKeyDown(KeyCode.Q)) ToggleSelectionType(0);
+        if (Input.GetKeyDown(KeyCode.W)) ToggleSelectionType(1);
+        if (Input.GetKeyDown(KeyCode.E)) ToggleSelectionType(2);
+        if (Input.GetKeyDown(KeyCode.R)) ToggleSelectionType(3);
+    }
+
+    void ToggleSelectionType(int type)
+    {
+        if (currentSelectionType == type)
+        {
+            currentSelectionType = -1;
+            ClearHighlights();
+            ClearHexMarkers();
+            selectedTiles.Clear();
+        }
+        else
+        {
+            currentSelectionType = type;
+            UpdateHighlights(lastHoveredTile);
+            selectedTiles.Clear();
+        }
     }
 
     void HandleHighlighting()
     {
+        if (currentSelectionType == -1) return;
+
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
             Tile hoveredTile = hit.collider.GetComponent<Tile>();
 
             if (hoveredTile != null && hoveredTile != lastHoveredTile)
             {
+                if (lastHoveredTile != null)
+                {
+                    lastHoveredTile.RemoveHighlight();
+                }
+
                 lastHoveredTile = hoveredTile;
+                hoveredTile.HighlightAsTarget();
                 UpdateHighlights(hoveredTile);
             }
         }
@@ -52,6 +85,7 @@ public class HoverHighlight : MonoBehaviour
     void UpdateHighlights(Tile hoveredTile)
     {
         ClearHighlights();
+        if (hoveredTile == null || currentSelectionType == -1) return;
 
         switch (currentSelectionType)
         {
@@ -59,13 +93,9 @@ public class HoverHighlight : MonoBehaviour
                 HighlightTilesInCircle(hoveredTile, radius);
                 break;
             case 1:
-                HighlightTriangle(hoveredTile);
-                break;
             case 2:
-                HighlightRay(hoveredTile);
-                break;
             case 3:
-                HighlightLine(hoveredTile);
+                HighlightDirectional(hoveredTile);
                 break;
         }
     }
@@ -75,38 +105,128 @@ public class HoverHighlight : MonoBehaviour
         List<Tile> tiles = TileSelector.GetTilesInCircle(centerTile, radius);
         foreach (var tile in tiles)
         {
-            tile.HighlightAsTarget();
-            currentlyHighlightedTiles.Add(tile);
+            if (!selectedTiles.Contains(tile))
+            {
+                tile.HighlightAsTarget();
+                currentlyHighlightedTiles.Add(tile);
+            }
         }
     }
 
-    void HighlightTriangle(Tile targetTile)
+    void HighlightDirectional(Tile targetTile)
     {
-        List<Tile> triangleTiles = GetTriangleTiles(targetTile);
-        foreach (var tile in triangleTiles)
+        Tile unitTile = tileSelector.targetSelector.currentUnit.currentTile;
+        Vector3 direction = (targetTile.transform.position - unitTile.transform.position).normalized;
+        Vector3 farPoint = unitTile.transform.position + direction * distance;
+        float baseWidth = distance * 0.5f;
+        Vector3 leftPoint = farPoint + Vector3.Cross(Vector3.up, direction) * baseWidth;
+        Vector3 rightPoint = farPoint - Vector3.Cross(Vector3.up, direction) * baseWidth;
+
+        List<Tile> edgeTiles = GetTilesAlongPath(unitTile.transform.position, farPoint);
+
+        if (currentSelectionType == 1)
         {
-            tile.HighlightAsTarget();
-            currentlyHighlightedTiles.Add(tile);
+            edgeTiles.RemoveAll(tile => tile == unitTile);
+            edgeTiles.AddRange(GetTilesAlongPath(farPoint, leftPoint));
+            edgeTiles.AddRange(GetTilesAlongPath(farPoint, rightPoint));
+            FillTriangle(edgeTiles, leftPoint, rightPoint);
+        }
+        else if (currentSelectionType == 2)
+        {
+            edgeTiles = GetTilesAlongPath(unitTile.transform.position, farPoint);
+            edgeTiles.RemoveAll(tile => tile == unitTile);
+            edgeTiles = edgeTiles.GetRange(0, Mathf.Min(edgeTiles.Count, distance));
+        }
+        else if (currentSelectionType == 3)
+        {
+            edgeTiles.Clear();
+            edgeTiles.AddRange(GetTilesAlongPath(leftPoint, rightPoint));
+        }
+
+        foreach (var tile in edgeTiles)
+        {
+            if (!selectedTiles.Contains(tile))
+            {
+                tile.HighlightAsTarget();
+                currentlyHighlightedTiles.Add(tile);
+            }
         }
     }
 
-    void HighlightRay(Tile targetTile)
+    void FillTriangle(List<Tile> edgeTiles, Vector3 leftPoint, Vector3 rightPoint)
     {
-        List<Tile> rayTiles = GetRayTiles(targetTile);
-        foreach (var tile in rayTiles)
+        foreach (Tile edgeTile in edgeTiles)
         {
-            tile.HighlightAsTarget();
-            currentlyHighlightedTiles.Add(tile);
+            List<Tile> lineToLeft = GetTilesAlongPath(edgeTile.transform.position, leftPoint);
+            List<Tile> lineToRight = GetTilesAlongPath(edgeTile.transform.position, rightPoint);
+            AddUniqueTiles(lineToLeft);
+            AddUniqueTiles(lineToRight);
         }
     }
 
-    void HighlightLine(Tile targetTile)
+    void AddUniqueTiles(List<Tile> tiles)
     {
-        List<Tile> lineTiles = GetLineTiles(targetTile);
-        foreach (var tile in lineTiles)
+        foreach (var tile in tiles)
         {
-            tile.HighlightAsTarget();
-            currentlyHighlightedTiles.Add(tile);
+            if (!currentlyHighlightedTiles.Contains(tile))
+            {
+                currentlyHighlightedTiles.Add(tile);
+                tile.HighlightAsTarget();
+            }
+        }
+    }
+
+    void SelectTile()
+    {
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+        {
+            Tile selectedTile = hit.collider.GetComponent<Tile>();
+
+            if (selectedTile != null)
+            {
+                if (selectedTiles.Contains(selectedTile))
+                {
+                    selectedTiles.Remove(selectedTile);
+                    Transform hexMarker = selectedTile.transform.Find("HexMarker");
+                    if (hexMarker != null) hexMarker.gameObject.SetActive(false);
+                }
+                else if (selectedTiles.Count < maxTargets)
+                {
+                    foreach (var tile in currentlyHighlightedTiles)
+                    {
+                        if (!selectedTiles.Contains(tile))
+                        {
+                            selectedTiles.Add(tile);
+                            Transform hexMarker = tile.transform.Find("HexMarker");
+                            if (hexMarker != null) hexMarker.gameObject.SetActive(true);
+                        }
+                    }
+
+                    if (selectedTiles.Count >= maxTargets)
+                    {
+                        StartCoroutine(UseAbilityCoroutine());
+                    }
+                }
+            }
+        }
+    }
+
+    void ActivateHexMarkers()
+    {
+        foreach (var tile in currentlyHighlightedTiles)
+        {
+            Transform hexMarker = tile.transform.Find("HexMarker");
+            if (hexMarker != null) hexMarker.gameObject.SetActive(true);
+        }
+    }
+
+    void ClearHexMarkers()
+    {
+        Tile[] allTiles = FindObjectsOfType<Tile>();
+        foreach (var tile in allTiles)
+        {
+            Transform hexMarker = tile.transform.Find("HexMarker");
+            if (hexMarker != null) hexMarker.gameObject.SetActive(false);
         }
     }
 
@@ -119,50 +239,13 @@ public class HoverHighlight : MonoBehaviour
         currentlyHighlightedTiles.Clear();
     }
 
-    List<Tile> GetTriangleTiles(Tile targetTile)
+    IEnumerator UseAbilityCoroutine()
     {
-        List<Tile> result = new List<Tile>();
-        Tile unitTile = tileSelector.targetSelector.currentUnit.currentTile;
-        Vector3 direction = (targetTile.transform.position - unitTile.transform.position).normalized;
-
-        int distance = 4;
-        Vector3 farPoint = unitTile.transform.position + direction * distance;
-
-        result.AddRange(GetTilesAlongPath(unitTile.transform.position, farPoint));
-
-        float baseWidth = distance * 0.5f;
-        Vector3 leftPoint = farPoint + Vector3.Cross(Vector3.up, direction) * baseWidth;
-        Vector3 rightPoint = farPoint - Vector3.Cross(Vector3.up, direction) * baseWidth;
-
-        result.AddRange(GetTilesAlongPath(farPoint, leftPoint));
-        result.AddRange(GetTilesAlongPath(farPoint, rightPoint));
-
-        return result;
-    }
-
-    List<Tile> GetRayTiles(Tile targetTile)
-    {
-        List<Tile> result = new List<Tile>();
-        Tile unitTile = tileSelector.targetSelector.currentUnit.currentTile;
-        Vector3 direction = (targetTile.transform.position - unitTile.transform.position).normalized;
-
-        result.AddRange(GetTilesAlongPath(unitTile.transform.position, targetTile.transform.position));
-
-        return result;
-    }
-
-    List<Tile> GetLineTiles(Tile targetTile)
-    {
-        List<Tile> result = new List<Tile>();
-        Tile unitTile = tileSelector.targetSelector.currentUnit.currentTile;
-        Vector3 direction = (targetTile.transform.position - unitTile.transform.position).normalized;
-
-        int distance = 4;
-        Vector3 farPoint = unitTile.transform.position + direction * distance;
-
-        result.AddRange(GetTilesAlongPath(unitTile.transform.position, farPoint));
-
-        return result;
+        Debug.Log("Ability activated with " + selectedTiles.Count + " targets!");
+        yield return new WaitForSeconds(1f);
+        ClearHexMarkers();
+        selectedTiles.Clear();
+        Debug.Log("Ability finished.");
     }
 
     List<Tile> GetTilesAlongPath(Vector3 start, Vector3 end)
@@ -176,7 +259,7 @@ public class HoverHighlight : MonoBehaviour
             Vector3 position = start + direction * i;
             Tile tile = FindTileAtPosition(position);
 
-            if (tile != null)
+            if (tile != null && !pathTiles.Contains(tile))
             {
                 pathTiles.Add(tile);
             }
