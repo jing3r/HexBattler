@@ -328,7 +328,6 @@ GameObject:
   - component: {fileID: 8393910984662035414}
   - component: {fileID: 5640050521004927093}
   - component: {fileID: -3178174637507873471}
-  - component: {fileID: 4022990490182393032}
   m_Layer: 0
   m_Name: difficultTerrainPrefab
   m_TagString: Tile
@@ -410,16 +409,3 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   pulseSpeed: 2
---- !u!114 &4022990490182393032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3788340901281890247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marker: {fileID: 2399399033243543228}

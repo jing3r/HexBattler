@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8976255720435232079}
   - component: {fileID: 4931234105815688495}
   - component: {fileID: -1827542133617463387}
-  - component: {fileID: -7690487986704421897}
   m_Layer: 0
   m_Name: highGroundPrefab
   m_TagString: Tile
@@ -94,19 +93,6 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   pulseSpeed: 2
---- !u!114 &-7690487986704421897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2638276581274246009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marker: {fileID: 3297967031341363188}
 --- !u!1 &3297967031341363188
 GameObject:
   m_ObjectHideFlags: 0

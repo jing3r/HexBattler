@@ -117,7 +117,6 @@ GameObject:
   - component: {fileID: -7215450671718004215}
   - component: {fileID: -4580602109993514651}
   - component: {fileID: 2569950028383525332}
-  - component: {fileID: -3352623049519730941}
   m_Layer: 0
   m_Name: normalTilePrefab
   m_TagString: Tile
@@ -199,19 +198,6 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   pulseSpeed: 2
---- !u!114 &-3352623049519730941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7240945727146859317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marker: {fileID: 8894682292463577310}
 --- !u!1 &7907266750845787031
 GameObject:
   m_ObjectHideFlags: 0

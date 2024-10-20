@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: -1638727612472833919}
   - component: {fileID: -9135313439578923256}
   - component: {fileID: -3659661725419513378}
-  - component: {fileID: 664559410568310194}
   m_Layer: 0
   m_Name: lowGroundPrefab
   m_TagString: Tile
@@ -94,19 +93,6 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   pulseSpeed: 2
---- !u!114 &664559410568310194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 453723041173944085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marker: {fileID: 5747936060421651948}
 --- !u!1 &2868083540237409467
 GameObject:
   m_ObjectHideFlags: 0

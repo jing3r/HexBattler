@@ -328,7 +328,6 @@ GameObject:
   - component: {fileID: -6732323718600807870}
   - component: {fileID: -553457488502165506}
   - component: {fileID: 8007318662912048444}
-  - component: {fileID: 308364035267667402}
   m_Layer: 0
   m_Name: partialCoverPrefab
   m_TagString: Impassable
@@ -410,16 +409,3 @@ MonoBehaviour:
   minScale: 0.95
   maxScale: 1.05
   pulseSpeed: 2
---- !u!114 &308364035267667402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6501762603094530627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marker: {fileID: 1946619743652058237}

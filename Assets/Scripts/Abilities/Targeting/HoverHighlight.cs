@@ -13,6 +13,7 @@ public class HoverHighlight : MonoBehaviour
     public int radius = 0;
     public int distance = 5;
     private int currentSelectionType = -1;
+    private bool abilityActivated = false;
 
     void Start()
     {
@@ -241,10 +242,15 @@ public class HoverHighlight : MonoBehaviour
 
     IEnumerator UseAbilityCoroutine()
     {
-        Debug.Log("Ability activated with " + selectedTiles.Count + " targets!");
+        Debug.Log("Ability activated with the following tiles:");
+        foreach (var tile in selectedTiles)
+        {
+            Debug.Log(tile.name);
+        }
         yield return new WaitForSeconds(1f);
         ClearHexMarkers();
         selectedTiles.Clear();
+        abilityActivated = false;
         Debug.Log("Ability finished.");
     }
 
