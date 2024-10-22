@@ -535,7 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb2c3876d4ee4e41ab7565a72fd206a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTargets: 3
+  maxTargets: 1
   radius: 0
   distance: 5
 --- !u!1 &705507993
